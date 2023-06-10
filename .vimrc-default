@@ -1,0 +1,829 @@
+set nocompatible " Don't try to be vi compatible
+
+" Plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+call plug#begin('~/.vim/bundle')
+" OnAir
+"
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'phpactor/phpactor', {'for': 'php', 'branch': 'master', 'do': 'composer install --no-dev -o'}
+Plug 'kshenoy/vim-signature'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'majutsushi/tagbar'
+Plug 'vim-php/tagbar-phpctags.vim'
+Plug 'sheerun/vim-polyglot'
+Plug 'junegunn/vim-easy-align'
+Plug 'sirver/UltiSnips'
+Plug 'honza/vim-snippets'
+Plug 'tpope/vim-surround'
+Plug 'dense-analysis/ale'
+Plug 'scrooloose/nerdcommenter'
+Plug 'vim-vdebug/vdebug'
+Plug 'tobyS/vmustache'
+Plug 'tobyS/pdv', {'for': 'php'}
+Plug '2072/PHP-Indenting-for-VIm', {'for': 'php'}
+Plug 'Vimjas/vim-python-pep8-indent', {'for': 'python'}
+
+"Plug 'samoshkin/vim-mergetool'
+" Colors
+Plug 'chrisbra/Colorizer'
+Plug 'morhetz/gruvbox'
+
+" Display
+"Plug 'vim-airline/vim-airline'
+"Plug 'vim-airline/vim-airline-themes'
+Plug 'powerline/powerline'
+"Plug 'bling/vim-bufferline'
+
+"Plug 'kshenoy/vim-signature'
+
+" CoC
+
+" GIT
+"Plug 'mhinz/vim-signify' (buggy)
+
+" TagBar
+
+" Common Languages
+
+" Javascript
+"Plugin 'ternjs/tern_for_vim'
+"Plug 'pangloss/vim-javascript'
+"Plugin 'jelera/vim-javascript-syntax'
+"Plugin 'maksimr/vim-jsbeautify'
+"Plug 'heavenshell/vim-jsdoc'
+
+" Other syntax highlight
+"Plugin 'rodjek/vim-puppet' not used
+
+" Coding Tools
+"Plug 'godlygeek/tabular' change for easy align
+"
+" Plug 'tpope/vim-commentary'
+"
+"Plug 'tpope/vim-ragtag'
+
+"Plug 'mattn/emmet-vim' not used
+"Plug 'ntpeters/vim-better-whitespace' not used
+"Plug 'Yggdroot/indentLine'
+"Plug 'nathanaelkane/vim-indent-guides'
+"Plug 'prettier/vim-prettier', {'do': 'npm install', 'for': ['php', 'css']}
+
+" Complete
+
+" PHP
+"Plug 'vim-vdebug/vdebug'
+"Plug 'tobyS/vmustache'
+"Plug 'tobyS/pdv', {'for': 'php'}
+"Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
+"Plug 'StanAngeloff/php.vim'
+"Plug 'beanworks/vim-phpfmt'
+"Plug 'c9s/phpunit.vim'
+"Plug 'nishigori/vim-php-dictionary'
+"Plug 'arnaud-lb/vim-php-namespace'
+"Plug 'stephpy/vim-php-cs-fixer'
+"Plug '2072/PHP-Indenting-for-VIm', {'for': 'php'}
+"Plug 'adoy/vim-php-refactoring-toolbox'
+"Plug 'Shougo/deoplete.nvim'
+"Plug 'phpactor/phpactor', {'for': 'php', 'tag': '*', 'do': 'composer install --no-dev -o'}
+"Plug 'swekaj/php-foldexpr.vim'
+
+" Html/Ctp/Xml etc..
+"Plug 'Valloric/MatchTagAlways'
+
+" Colors
+"Plug 'morhetz/gruvbox'
+"Plug 'junegunn/seoul256.vim'
+"Plug 'vim-scripts/yowish'
+"Plug 'connorholyday/vim-snazzy'
+"Plug 'tomasr/molokai'
+" AI ML
+"Plug 'tom-doerr/vim_codex'
+Plug 'Exafunction/codeium.vim'
+
+" Distraction Free Mode
+Plug 'junegunn/goyo.vim'
+
+call plug#end()
+" Vundle End
+
+"
+" Codex
+"
+"nnoremap  <C-x> :CreateCompletion<CR>
+"inoremap  <C-x> <Esc>li<C-g>u<Esc>l:CreateCompletion<CR>
+
+"
+" Codeium
+"
+let g:codeium_disable_bindings = 1
+"let g:codeium_manual = v:true
+imap <script><silent><nowait><expr> <C-g> codeium#Accept()
+imap <C-a>   <Cmd>call codeium#CycleCompletions(1)<CR>
+imap <C-z>   <Cmd>call codeium#CycleCompletions(-1)<CR>
+imap <C-x>   <Cmd>call codeium#Clear()<CR>
+"
+" Syntax
+"
+syntax enable
+syntax sync minlines=10000
+
+
+" Keybindings when in Tmux
+if &term =~ '^tmux'
+    " tmux sends xterm-style keys when xterm-keys option is on
+    execute "set <xUp>=\e[1;*A"
+    execute "set <xDown>=\e[1;*B"
+    execute "set <xRight>=\e[1;*C"
+    execute "set <xLeft>=\e[1;*D"
+    execute "set <xHome>=\e[1;*H"
+    execute "set <xEnd>=\e[1;*F"
+    execute "set <Insert>=\e[2;*~"
+    execute "set <Delete>=\e[3;*~"
+    execute "set <PageUp>=\e[5;*~"
+    execute "set <PageDown>=\e[6;*~"
+    "execute "set <xF1>=\e[1;*P"
+    "execute "set <xF2>=\e[1;*Q"
+    "execute "set <xF3>=\e[1;*R"
+    "execute "set <xF4>=\e[1;*S"
+    "execute "set <F5>=\e[15;*~"
+    "execute "set <F6>=\e[17;*~"
+    "execute "set <F7>=\e[18;*~"
+    "execute "set <F8>=\e[19;*~"
+    "execute "set <F9>=\e[20;*~"
+    "execute "set <F10>=\e[21;*~"
+    "execute "set <F11>=\e[23;*~"
+    "execute "set <F12>=\e[24;*~"
+    "execute "set <F12>=\e[24;*~"
+
+    "nnoremap [6;5~ gT
+    "nnoremap [5;5~ gt
+
+endif
+
+"
+" Leaders
+"
+let mapleader = ','
+
+" Special remap to supersed redraw
+"nnoremap <silent> <C-l> :call SetBackground()<return><C-l>
+
+"nnoremap <silent> <Leader>l :call ShowLongLine()<CR>
+nnoremap <silent> <leader>b :TagbarToggle<CR>
+"nnoremap <silent> <leader>c :Ccontroller <C-R><C-W><CR>
+nnoremap <silent> <leader>d :call pdv#DocumentWithSnip()<CR>
+"nnoremap <silent> <leader>f :PhpFmt<CR>
+"nnoremap <silent> <leader>k :Ccore <C-R><C-W><CR>
+"nnoremap <silent> <leader>l :set list!<CR> " Toggle tabs and EOL
+"nnoremap <silent> <leader>m :Cmodel <C-R><C-W><CR>
+"nnoremap <silent> <leader>n :NERDTreeToggle<CR>
+nnoremap <silent> <leader>p :set invpaste paste?<CR>
+nnoremap <silent> <leader>q gg=G
+nnoremap <silent> <leader>r :so $MYVIMRC<CR>
+"nnoremap <silent> <leader>s :SyntasticToggleMode<CR>
+nnoremap <silent> <leader>s :ALEToggle<CR>
+"nnoremap <silent> <leader>t :TagbarToggle<CR>
+"nnoremap <silent> <leader>t :call DoCtags()<CR>
+"nnoremap <silent> <leader>w :call StripTrailingWhitespace()<CR>
+"noremap <silent> <leader>g :call phpactor#GotoDefinition()<CR>
+inoremap <silent> <leader>f <C-x><C-f>
+inoremap <silent> <leader>i <C-x><C-i>
+inoremap <silent> <leader>l <C-x><C-l>
+inoremap <silent> <leader>n <C-x><C-n>
+"inoremap <silent> <leader>o <C-x><C-o> " default
+inoremap <silent> <leader>t <C-x><C-]>
+inoremap <silent> <leader>u <C-x><C-u>
+
+" Autocompletion with tab
+"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
+" Call ctags generation
+"nnoremap <silent> <leader>1 :!gen_ctags_php &<CR>
+"nnoremap <silent> <leader>2 :!gen_ctags_js &<CR>
+nnoremap <silent> <leader><space> :let @/=''<cr> " clear search
+
+" Paste toggle
+set pastetoggle=<leader>p
+" Keys Mapping
+"vnoremap <C-c> "+y
+"inoremap <C-v> <leader>p<C-r>+<leader>p
+" PHP Cs Fixer
+"nnoremap <silent><leader>pcd :call PhpCsFixerFixDirectory()<CR>
+"nnoremap <silent><leader>pcf :call PhpCsFixerFixFile()<CR>
+
+"
+" Highlight not move
+"
+nnoremap * *``
+nnoremap # #``
+
+"
+"" Mapping
+"
+"" Moving Blocks
+vnoremap > >gv
+vnoremap < <gv
+" Moving around with Arrows
+nmap <silent> <A-Up> :wincmd k<CR>
+nmap <silent> <A-Down> :wincmd j<CR>
+nmap <silent> <A-Left> :wincmd h<CR>
+nmap <silent> <A-Right> :wincmd l<CR>
+nmap <silent> <A-Home> :exe winnr('$') . "wincmd h"<CR>
+nmap <silent> <A-End> :exe winnr('$') . "wincmd l"<CR>
+" Window resizing mappings
+nmap <silent> <S-A-Left> <C-w><
+nmap <silent> <S-A-Down> <C-W>-
+nmap <silent> <S-A-Up> <C-W>+
+nmap <silent> <S-A-Right> <C-w>>
+" Word move
+nmap <silent> <C-Left> b
+nmap <silent> <C-Right> w
+" remap help key.
+"inoremap <F1> <ESC>:set invfullscreen<CR>a
+"nnoremap <F1> :set invfullscreen<CR>
+"vnoremap <F1> :set invfullscreen<CR>
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
+" Allow saving of files as sudo when I forgot to start vim using sudo.
+cmap w!! w !sudo tee > /dev/null %
+
+"
+" Functions:
+"
+
+function! CommentLine()
+    exec 'norm '.(&cc - strlen(getline('.')) - 1).'A-'
+endfunction
+
+function! Slack(name) range
+    echo system('echo '.shellescape(join(getline(a:firstline, a:lastline), "\n")).'| slackTo '.a:name)
+endfunction
+
+function! ShowLongLine()
+    if exists('w:long_line_match')
+        silent! call matchdelete(w:long_line_match)
+        unlet w:long_line_match
+    elseif &textwidth > 0
+        let w:long_line_match = matchadd('ErrorMsg', '\%>'.&tw.'v.\+', -1)
+    else
+        let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1)
+    endif
+endfunction
+
+"function! DoCtags()
+"    if index(['php'], &ft) > -1
+"        exec '!ctags-exuberant -R --tag-relative --languages=' . a:ft . ' -f .'. a:ft . '.tags'
+"    endif
+"endfunction
+
+"function! StripTrailingWhitespace()
+  "if !&binary && &filetype != 'diff'
+    "normal mz
+    "normal Hmy
+    "%s/\s\+$//e
+    "normal 'yz<CR>
+    "normal `z
+  "endif
+"endfunction
+
+"
+" phpactor/CoC
+"
+" Select range based on AST
+nmap <silent><Leader>r <Plug>(coc-range-select)
+xmap <silent><Leader>r <Plug>(coc-range-select)
+
+" Navigations
+nmap <Leader>o <Plug>(coc-definition)
+nmap <Leader>O <Plug>(coc-type-definition)
+nmap <Leader>I <Plug>(coc-implementation)
+nmap <Leader>R <Plug>(coc-references)
+
+" List code actions available for the current buffer
+nmap <leader>A  <Plug>(coc-codeaction)
+
+"inoremap <silent><expr> <TAB>
+      "\ pumvisible() ? "\<C-n>" :
+      "\ <SID>check_back_space() ? "\<TAB>" :
+      "\ coc#refresh()
+" Use <CR> to validate completion (allows auto import on completion)
+" Replace by CoC setting above 2021-02-01
+"inoremap <expr> <tab> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+"inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+"function! s:check_back_space() abort
+  "let col = col('.') - 1
+  "return !col || getline('.')[col - 1]  =~# '\s'
+"endfunction
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+"inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+"                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Hover
+nmap K :call <SID>show_documentation()<CR>
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Text objects for functions and classes (uses document symbol provider)
+xmap if <Plug>(coc-funcobj-i)
+omap if <Plug>(coc-funcobj-i)
+xmap af <Plug>(coc-funcobj-a)
+omap af <Plug>(coc-funcobj-a)
+xmap ic <Plug>(coc-classobj-i)
+omap ic <Plug>(coc-classobj-i)
+xmap ac <Plug>(coc-classobj-a)
+omap ac <Plug>(coc-classobj-a)
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+"
+" Git Gutter
+"
+set updatetime=100
+
+"
+" PHP: Settings
+"
+function! PhpSettings()
+    "setlocal tags=.php.tags
+    "let b:php_folding = 2             " PHP
+
+    let b:phpfold_use = 1 " Fold groups of use statements in the global scope.
+    let b:phpfold_group_iftry = 1 " Fold if/elseif/else and try/catch/finally blocks as a group, rather than each part separate.
+    let b:phpfold_group_args = 0 " Group function arguments split across multiple lines into their own fold.
+    let b:phpfold_group_case = 1 " Fold case and default blocks inside switches.
+    let b:phpfold_heredocs = 1 " Fold HEREDOCs and NOWDOCs.
+    let b:phpfold_docblocks = 0 " Fold DocBlocks.
+    let b:phpfold_doc_with_funcs = 0 " Fold DocBlocks. Overrides b:phpfold_docblocks.
+    let b:phpfold_text = 1 " Enable the custom foldtext option.
+    let b:phpfold_text_right_lines = 1 " Display the line count on the right instead of the left.
+    let b:phpfold_text_percent = 1 " Display the percentage of lines the fold represents.
+endfunction
+
+"
+" AutoCmd: Utils
+"
+" Uncomment the following to have Vim jump to the last position when
+" reopening a file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
+"autocmd Syntax vim,javascript setlocal foldmethod=syntax
+"autocmd Syntax php setlocal foldmethod=expr
+
+"autocmd FileType mail let b:delimitMate_autoclose = 0
+"" Strip end of lines
+augroup stripwhitespace
+    autocmd!
+    autocmd FileWritePre,FileAppendPre,FilterWritePre,BufWritePre * %s/\s\+$//e
+augroup END
+" Generate ctags for php
+" "autocmd BufWritePost * silent! if index(ctagswhitelist, &ft) > -1 | call
+" DoCtags(&ft)
+"autocmd StdinReadPre * let s:std_in=1
+
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+"augroup jsgroup
+    "autocmd!
+    "autocmd BufWritePost *.js silent! !eval 'gen_ctags_js' &
+    "autocmd BufWritePost *.jsx silent! !eval 'gen_ctags_js' &
+    "autocmd FileType javascript setlocal tags=.js.tags
+"augroup END
+
+"augroup phpgroup
+    "autocmd!
+    "autocmd FileType php setlocal omnifunc=phpactor#Complete
+    "autocmd FileType php setlocal foldmethod=expr
+    "autocmd FileType php call PhpSettings()
+
+    "autocmd FileType php let b:prettier_ft_default_args = {'parser': 'php',
+    "autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
+    "autocmd BufWritePost *.php silent! !eval 'gen_ctags_php' &
+    "setlocal tags=.php.tags
+    "redraw!
+"augroup END
+
+augroup autosourcing
+    autocmd!
+    autocmd BufWritePost ~/.vimrc :so %
+augroup END
+
+"!autocmd
+"augroup replayhi
+"    autocmd!
+"    autocmd ColorScheme * so ~/.vim/custom_hilight.vim
+"augroup END
+" Complete common
+"
+" CoC setting above 2021-02-01
+"autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+"
+" MatchTags
+"
+let g:mta_filetypes = {
+    \ 'html' : 1,
+    \ 'xhtml' : 1,
+    \ 'xml' : 1,
+    \ 'php' : 1,
+    \}
+
+
+"
+" Indent Line
+"
+"let g:indentLine_char = '▏'
+"│'
+"¦, ┆, │, ⎸, or
+"let g:indent_guides_start_level = 3
+"let g:indent_guides_guide_size = 1
+
+"
+" GitGutter
+"
+let g:gitgutter_sign_priority = 1
+
+"
+" phpctags
+"
+let g:tagbar_phpctags_bin='$HOME/bin/phpctags'
+let g:tagbar_phpctags_memory_limit = '512M'
+
+"
+" Indent PHP
+"
+"let g:PHP_removeCRwhenUnix = 1
+let g:PHP_vintage_case_default_indent = 1
+"
+" ALE
+"
+"let g:ale_linters = {
+"\   'javascript': ['eslint'],
+"\   'php'       : ['php, 'phpcs', 'phpmd']
+"\}
+"let g:ale_javascript_eslint_use_global = 1
+"let g:ale_linters = {'javascript': ['eslint'], 'css': ['stylelint'], 'php': ['phpcs', 'php'], 'ctp': ['php', 'phpcs']}
+"let g:ale_linters = {'javascript': ['eslint'], 'javascriptreact': ['eslint'], 'css': ['stylelint'], 'php': ['phpstan', 'phpcs', 'php', 'phpmd'], 'ctp': ['php', 'phpcs']}
+let g:ale_linters = {'javascript': ['eslint'], 'javascriptreact': ['eslint'], 'css': ['stylelint'], 'php': ['phpstan', 'phpcs', 'php'], 'ctp': ['php', 'phpcs']}
+"let g:ale_linters = {'php': ['psalm']}
+"let g:ale_fixers = {'javascript': ['eslint'], 'css': ['csslint']}
+"let g:ale_fixers = {'php': ['phpcbf']}
+let g:ale_fixers = {'php': ['php_cs_fixer']}
+let g:ale_php_cs_fixer_options = "--allow-risky=yes"
+"let g:ale_javascript_eslint_options = '-c ./build/.eslintrc'
+"let g:ale_php_phpmd_ruleset = $HOME . '/Code/standards/phpmd-ruleset.xml'
+
+"let g:ale_php_phpcs_executable = 'vendor/bin/phpcs'
+"let g:ale_php_phpcs_standard = $HOME .'/Code/standards/psr2-tom-ruleset.xml'
+
+let g:ale_lint_on_text_changed = "never"
+let g:ale_lint_delay=1000
+let g:airline#extensions#ale#enabled = 1
+let g:ale_enabled = 1
+"let g:ale_open_list = 1
+" Set this if you want to.
+" This can be useful if you are combining ALE with
+" some other plugin which sets quickfix errors, etc.
+"let g:ale_keep_list_window_open = 1
+"let g:ale_list_vertical = 1
+" Show 5 lines of errors (default: 10)
+let g:ale_list_window_size = 5
+"let g:ale_sign_error = '⚠️' "Less aggressive than the default '>>'
+let g:ale_sign_error = '→' "Less aggressive than the default '>>'
+"let g:ale_sign_warning = '💡'
+let g:ale_sign_priority = 9
+"
+" CtrlP settings
+"
+let g:ctrlp_max_files=0
+let g:ctrlp_max_depth=40
+"let g:ctrlp_user_command='cd %s;git ls-files'
+let g:ctrlp_user_command='find %s -type f'
+
+"
+" PDV
+"
+"let g:pdv_template_dir = $HOME . "/Code/snips/templates_snip"
+let g:pdv_template_dir = $HOME . "/.vim/bundle/pdv/templates_snip"
+
+"
+" Ctags: Exuberant
+"
+"set tags+=.php.tags,.js.tags
+
+"
+" Complete Menu
+"
+set completeopt-=preview
+set completeopt+=menuone,noinsert,noselect
+
+"
+" Airline: Settings
+"
+"let g:airline_theme='Atelier_PlateauDark'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" unicode symbols
+"let g:airline_left_sep = '»'
+"let g:airline_left_sep = '▶'
+"let g:airline_right_sep = '«'
+"let g:airline_right_sep = '◀'
+"let g:airline_symbols.linenr = '␊'
+"let g:airline_symbols.linenr = '␤'
+"let g:airline_symbols.linenr = '¶'
+"let g:airline_symbols.branch = ''
+let g:airline_symbols.paste = 'ρ'
+"let g:airline_symbols.paste = 'Þ'
+"let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
+" airline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+let g:airline_symbols.branch = ''
+
+"
+" TagBar: settings
+"
+"let g:tagbar_iconchars = ['▶', '▼']
+let g:tagbar_iconchars = ['▸', '▾']
+"let g:tagbar_iconchars = ['▷', '◢']
+"let g:tagbar_iconchars = ['+', '-']
+
+"
+" Fugitive: Setting
+"
+set statusline=%{fugitive#statusline()}%airline
+
+"
+" UtilSnip: Trigger
+"
+" vertically split ultisnips edit window
+let g:UltiSnipsEditSplit="vertical"
+" let g:UltiSnipsSnippetDirectories="~/.vim/UltiSnips"
+"let g:UltiSnipsListSnippets="<C-Tab>"
+"let g:UltiSnipsExpandTrigger="<C-n>"
+"let g:UltiSnipsJumpForwardTrigger="<C-j>"
+"let g:UltiSnipsJumpBackwardTrigger="<C-k>"
+"let g:UltiSnipsEditSplit='vertical'
+"let g:UltiSnipsUsePythonVersion = 2
+
+"
+" Bufferline: Settings
+"
+"let g:bufferline_echo=0
+
+"
+" VIM Completion
+"
+let php_sql_query=1
+let php_htmlInStrings=1
+
+
+"
+" PhpFmt: PSR2 AutoFormat
+"
+" A standard type: PEAR, PHPCS, PSR1, PSR2, Squiz and Zend
+let g:phpfmt_standard = 'PSR2 --no-patch'
+"let g:phpfmt_opotions = '--standard=PSR2 --encoding=utf-8 --no-patch'
+" Or your own defined source of standard (absolute or relative path):
+"let g:phpfmt_standard = '/path/to/custom/standard.xml'
+let g:phpfmt_autosave = 0
+"let g:phpfmt_command = '/path/to/phpcbf --no-patch'
+"let g:phpfmt_tmp_dir = '/path/to/tmp/folder'
+
+"
+" Vim: Options
+"
+" Rendering
+set redrawtime=10000
+set ttyfast
+set lazyredraw
+set visualbell
+
+" Visual (statusline related)
+set noshowmode
+set showcmd
+set ruler
+set laststatus=2
+set cmdheight=2
+
+" Encoding
+set encoding=UTF-8
+
+"Security
+"set modelines=0
+
+" Show line numbers
+set number
+"set relativenumber
+
+" Show file stats
+
+" Menu
+set wildmenu
+set wildmode=list:longest,full
+
+" Cursor motion
+set scrolloff=2
+set sidescrolloff=2
+
+set shell=bash
+
+set history=700
+
+set backspace=indent,eol,start
+set matchpairs+=<:> " use % to jump between pairs
+set whichwrap+=<,>,h,l
+
+set colorcolumn=80
+set cursorline
+"set cursorcolumn
+set nowrap
+
+" Allow hidden buffers
+set hidden
+
+" Auto reload
+set autoread
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Textmate holdouts
+
+set ttymouse=sgr
+"if &term =~ '^tmux'
+    "set ttymouse=xterm2
+"else
+    "set ttymouse=urxvt
+"endif
+set mouse=a
+
+" fold
+set nofoldenable
+"set foldmethod=syntax
+"set foldenable
+"set foldlevelstart=20
+"set foldlevel=3 "Was the one
+
+"let javaScript_fold=1         " JavaScript
+"let perl_fold=1               " Perl
+"let php_folding=2             " PHP
+"let r_syntax_folding=1        " R
+"let ruby_fold=1               " Ruby
+"let sh_fold_enabled=1         " sh
+"let vimsyn_folding='af'       " Vim script
+"let xml_syntax_folding=1      " XML
+
+" set noswapfile
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
+set undodir=~/.vim/undo//
+
+" white space
+set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<
+set list
+
+" Searching
+set hlsearch
+set incsearch
+"set ignorecase
+set smartcase
+set showmatch
+set diffopt=filler,iwhite
+
+" Formatting
+set autoindent
+set copyindent
+set tabstop=4
+set shiftround
+set softtabstop=0
+set expandtab
+set shiftwidth=4
+set smarttab
+
+"
+" color sync syntax
+"
+set fillchars=fold:-,vert:│
+" Put at the very end of your .vimrc file.
+
+function! PhpSyntaxOverride()
+  hi! def link phpDocTags  phpDefine
+  hi! def link phpDocParam phpType
+endfunction
+
+augroup phpSyntaxOverride
+  autocmd!
+  autocmd FileType php call PhpSyntaxOverride()
+augroup END
+
+" Per-directory .vimrc files
+set exrc
+set secure
+
+" Reduce delay on exiting isert mode
+set ttimeout
+augroup FastEscape
+    autocmd!
+    autocmd InsertEnter * set ttimeoutlen=0
+    autocmd InsertLeave * set ttimeoutlen=-1 "<--- default value; also try 100 or something
+augroup END
+
+"
+" Colors
+"
+"set t_Co=256
+
+"let g:gruvbox_contrast_dark='high'
+"let g:gruvbox_contrast_light='high'
+"let base16colorspace=256  " Access colors present in 256 colorspace
+
+"colorscheme molokai
+"colorscheme sialoquent
+"colorscheme despacio
+"colorscheme jellybeans
+"let g:solarized_termcolors=256
+
+"colorscheme solarized
+"colorscheme Tomorrow-Night-Eighties
+colorscheme gruvbox
+"let g:solarized_contrast="high"
+
+"colorscheme distinguished
+"let g:seoul256_light_background = 256
+"let g:seoul256_background = 233
+"let g:seoul256_srgb = 1
+"colorscheme seoul256-light
+"colorscheme seoul256
+"colorscheme gruvbox
+"colorscheme Atelier_PlateauLight
+"colorscheme yowish
+"let g:yowish.term_italic = 1
+
+"colorscheme snazzy
+"function! SetBackground()
+    "if filereadable(expand("~/.dynamic-colors/colorscheme"))
+        "for s:line in readfile(expand("~/.dynamic-colors/colorscheme"), '', 1)
+            "let &background=s:line
+        "endfor
+    "endif
+"endfunction
+"set background=light
+"set background=dark
+
+set spell
+"call SetBackground()
+
+" Use a line cursor within insert mode and a block cursor everywhere else.
+"
+" Reference chart of values:
+"   Ps = 0  -> blinking block.
+"   Ps = 1  -> blinking block (default).
+"   Ps = 2  -> steady block.
+"   Ps = 3  -> blinking underline.
+"   Ps = 4  -> steady underline.
+"   Ps = 5  -> blinking bar (xterm).
+"   Ps = 6  -> steady bar (xterm).
+"let &t_SI = "\e[6 q"
+"let &t_EI = "\e[4 q"
+
+" Snippets author
+let g:snips_author = "Dave"
+
+"let &t_ZR="\e[3m"
+"let &t_ZH="\e[23m"
+set t_ZH=[3m
+set t_ZR=[23m
+hi Comment cterm=italic
+

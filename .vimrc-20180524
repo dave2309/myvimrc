@@ -1,0 +1,563 @@
+set nocompatible " Don't try to be vi compatible
+
+" Helps force plugins to load correctly when it is turned back on below
+filetype off
+
+" Turn on Vundle
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" Let vundle manage itself
+Plugin 'VundleVim/Vundle.vim'
+
+" Project Browsing
+"Plugin 'kien/ctrlp.vim' not used
+"Plugin 'yegappan/mru' not used
+"Plugin 'scrooloose/nerdtree'
+"Plugin 'tiagofumo/vim-nerdtree-syntax-highlight' not used
+"Plugin 'Xuyuanp/nerdtree-git-plugin'
+
+" Display
+"Plugin 'vim-airline/vim-airline'
+"Plugin 'vim-airline/vim-airline-themes'
+"Plugin 'bling/vim-bufferline'
+"Plugin 'kshenoy/vim-signature'
+
+" GIT
+"Plugin 'tpope/vim-fugitive'
+"Plugin 'junegunn/gv.vim'
+"Plugin 'airblade/vim-gitgutter'
+
+" TagBar
+"Plugtin 'majutsushi/tagbar'
+"Plugin 'vim-php/tagbar-phpctags.vim'
+
+" Javascript
+"Plugin 'ternjs/tern_for_vim'
+"Plugin 'pangloss/vim-javascript'
+"Plugin 'jelera/vim-javascript-syntax'
+"Plugin 'maksimr/vim-jsbeautify'
+
+" Other syntax highlight
+"Plugin 'rodjek/vim-puppet' not used
+
+" Coding Tools
+"Plugin 'jiangmiao/auto-pairs' not used
+"Plugin 'godlygeek/tabular'
+"Plugin 'sirver/UltiSnips'
+"Plugin 'honza/vim-snippets'
+"Plugin 'tpope/vim-surround'
+"Plugin 'vim-syntastic/syntastic' not used
+"Plugin 'w0rp/ale'
+"Plugin 'scrooloose/nerdcommenter'
+"Plugin 'mattn/emmet-vim' not used
+"Plugin 'ntpeters/vim-better-whitespace' not used
+
+" Complete
+"Plugin 'ajh17/VimCompletesMe'
+
+" PHP
+"Plugin 'joonty/vdebug'
+"Plugin 'tobyS/vmustache'
+"Plugin 'tobyS/pdv'
+"Plugin 'StanAngeloff/php.vim'
+"Plugin 'beanworks/vim-phpfmt'
+"Plugin 'c9s/phpunit.vim'
+"Plugin 'nishigori/vim-php-dictionary'
+"Plugin 'arnaud-lb/vim-php-namespace'
+"Plugin 'stephpy/vim-php-cs-fixer'
+"Plugin '2072/PHP-Indenting-for-VIm'
+"Plugin 'adoy/vim-php-refactoring-toolbox'
+"Plugin 'swekaj/php-foldexpr.vim'
+
+" Colors
+Plugin 'junegunn/seoul256.vim'
+call vundle#end()
+" Vundle End
+
+" Enable last things
+filetype plugin indent on
+syntax on
+
+"
+" Leaders
+"
+let mapleader = ','
+
+nnoremap <silent> <Leader>l :call ShowLongLine()<CR>
+nnoremap <silent> <leader>b :TagbarToggle<CR>
+"nnoremap <silent> <leader>c :Ccontroller <C-R><C-W><CR>
+nnoremap <silent> <leader>d :call pdv#DocumentWithSnip()<CR>
+nnoremap <silent> <leader>f :PhpFmt<CR>
+"nnoremap <silent> <leader>k :Ccore <C-R><C-W><CR>
+nnoremap <silent> <leader>l :set list!<CR> " Toggle tabs and EOL
+"nnoremap <silent> <leader>m :Cmodel <C-R><C-W><CR>
+nnoremap <silent> <leader>n :NERDTreeToggle<CR>
+nnoremap <silent> <leader>p :set invpaste paste?<CR>
+nnoremap <silent> <leader>q gg=G
+nnoremap <silent> <leader>r :so $MYVIMRC<CR>
+"nnoremap <silent> <leader>s :SyntasticToggleMode<CR>
+nnoremap <silent> <leader>s :ALEToggle<CR>
+nnoremap <silent> <leader>t :TagbarToggle<CR>
+"nnoremap <silent> <leader>t :call DoCtags()<CR>
+"nnoremap <silent> <leader>w :call StripTrailingWhitespace()<CR>
+
+" Autocompletion with tab
+"inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+
+" Call ctags generation
+nnoremap <silent> <leader>1 :!gen_ctags_php &<CR>
+nnoremap <silent> <leader>2 :!gen_ctags_js &<CR>
+nnoremap <silent> <leader><space> :let @/=''<cr> " clear search
+
+" Paste toggle
+set pastetoggle=<leader>p
+" Keys Mapping
+"vnoremap <C-c> "+y
+"inoremap <C-v> <leader>p<C-r>+<leader>p
+" PHP Cs Fixer
+nnoremap <silent><leader>pcd :call PhpCsFixerFixDirectory()<CR>
+nnoremap <silent><leader>pcf :call PhpCsFixerFixFile()<CR>
+
+"
+" Highlight not move
+"
+nnoremap * *``
+nnoremap # #``
+
+"
+"" Mapping
+"
+"" Moving Blocks
+vnoremap > >gv
+vnoremap < <gv
+" Moving around with Arrows
+nmap <silent> <A-Up> :wincmd k<CR>
+nmap <silent> <A-Down> :wincmd j<CR>
+nmap <silent> <A-Left> :wincmd h<CR>
+nmap <silent> <A-Right> :wincmd l<CR>
+nmap <silent> <A-Home> :exe winnr('$') . "wincmd h"<CR>
+nmap <silent> <A-End> :exe winnr('$') . "wincmd l"<CR>
+" Window resizing mappings
+nmap <silent> <S-A-Left> <C-w><
+nmap <silent> <S-A-Down> <C-W>-
+nmap <silent> <S-A-Up> <C-W>+
+nmap <silent> <S-A-Right> <C-w>>
+" Word move
+nmap <silent> <C-Left> b
+nmap <silent> <C-Right> w
+" remap help key.
+"inoremap <F1> <ESC>:set invfullscreen<CR>a
+"nnoremap <F1> :set invfullscreen<CR>
+"vnoremap <F1> :set invfullscreen<CR>
+xmap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
+
+"
+" Functions:
+"
+function! ShowLongLine()
+    if exists('w:long_line_match')
+        silent! call matchdelete(w:long_line_match)
+        unlet w:long_line_match
+    elseif &textwidth > 0
+        let w:long_line_match = matchadd('ErrorMsg', '\%>'.&tw.'v.\+', -1)
+    else
+        let w:long_line_match = matchadd('ErrorMsg', '\%>80v.\+', -1)
+    endif
+endfunction
+
+function! DoCtags()
+    if index(['php'], &ft) > -1
+        exec '!ctags-exuberant -R --tag-relative --languages=' . a:ft . ' -f .'. a:ft . '.tags'
+    endif
+endfunction
+
+"function! StripTrailingWhitespace()
+  "if !&binary && &filetype != 'diff'
+    "normal mz
+    "normal Hmy
+    "%s/\s\+$//e
+    "normal 'yz<CR>
+    "normal `z
+  "endif
+"endfunction
+
+"
+" PHP: Settings
+"
+function! PhpSettings()
+    setlocal tags=.php.tags
+    "let b:phpfold_use = 1 " Fold groups of use statements in the global scope.
+    "let b:phpfold_group_iftry = 1 " Fold if/elseif/else and try/catch/finally blocks as a group, rather than each part separate.
+    "let b:phpfold_group_args = 1 " Group function arguments split across multiple lines into their own fold.
+    "let b:phpfold_group_case = 1 " Fold case and default blocks inside switches.
+    "let b:phpfold_heredocs = 1 " Fold HEREDOCs and NOWDOCs.
+    "let b:phpfold_docblocks = 0 " Fold DocBlocks.
+    "let b:phpfold_doc_with_funcs = 0 " Fold DocBlocks. Overrides b:phpfold_docblocks.
+    "let b:phpfold_text = 1 " Enable the custom foldtext option.
+    "let b:phpfold_text_right_lines = 0 " Display the line count on the right instead of the left.
+    "let b:phpfold_text_percent = 1 " Display the percentage of lines the fold represents.
+endfunction
+
+"
+"" AutoCmd: Utils
+"
+"autocmd Syntax vim,javascript setlocal foldmethod=syntax
+"autocmd Syntax php setlocal foldmethod=expr
+
+"autocmd FileType mail let b:delimitMate_autoclose = 0
+"" Strip end of lines
+augroup stripwhitespace
+    autocmd!
+    autocmd FileWritePre,FileAppendPre,FilterWritePre,BufWritePre * %s/\s\+$//e
+augroup END
+" Generate ctags for php
+" "autocmd BufWritePost * silent! if index(ctagswhitelist, &ft) > -1 | call
+" DoCtags(&ft)
+autocmd StdinReadPre * let s:std_in=1
+
+" autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+
+augroup jsgroup
+    autocmd!
+    autocmd BufWritePost *.js silent! !eval 'gen_ctags_js' &
+    autocmd BufWritePost *.jsx silent! !eval 'gen_ctags_js' &
+    autocmd FileType javascript setlocal tags=.js.tags
+augroup END
+
+augroup phpgroup
+    autocmd!
+    "autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
+    "autocmd FileType php setlocal foldmethod=expr
+    autocmd FileType php call PhpSettings()
+    autocmd BufWritePost *.php silent! !eval 'gen_ctags_php' &
+augroup END
+
+augroup autosourcing
+    autocmd!
+    autocmd BufWritePost ~/.vimrc :so %
+augroup END
+
+" Complete common
+"
+autocmd InsertLeave,CompleteDone * if pumvisible() == 0 | pclose | endif
+
+"
+" ALE
+"
+"let g:ale_linters = {
+"\   'javascript': ['eslint'],
+"\   'php'       : ['php, 'phpcs', 'phpmd']
+"\}
+let g:ale_fixers = { 'javascript': ['eslint'] }
+"let g:ale_javascript_eslint_options = '-c ./build/.eslintrc'
+let g:ale_php_phpmd_ruleset = $HOME . '/Code/standards/phpmd-ruleset.xml'
+let g:ale_php_phpcs_standard = $HOME .'/Code/standards/psr2-tom-ruleset.xml -n'
+
+let g:ale_lint_on_text_changed = "never"
+let g:ale_lint_delay=1000
+let g:airline#extensions#ale#enabled = 1
+let g:ale_enabled = 1
+"let g:ale_open_list = 1
+" Set this if you want to.
+" This can be useful if you are combining ALE with
+" some other plugin which sets quickfix errors, etc.
+"let g:ale_keep_list_window_open = 1
+"let g:ale_list_vertical = 1
+" Show 5 lines of errors (default: 10)
+let g:ale_list_window_size = 5
+
+
+"
+" CtrlP settings
+"
+let g:ctrlp_max_files=0
+let g:ctrlp_max_depth=40
+"let g:ctrlp_user_command='cd %s;git ls-files'
+let g:ctrlp_user_command='find %s -type f'
+
+"
+" PDV
+"
+let g:pdv_template_dir = $HOME . "/Code/snips/templates_snip"
+
+"
+" Ctags: Exuberant
+"
+"set tags+=.php.tags,.js.tags
+
+"
+" Complete Menu
+"
+set completeopt-=preview
+set completeopt+=menuone,noinsert,noselect
+
+"
+" Airline: Settings
+"
+"let g:airline_theme='Atelier_PlateauDark'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" unicode symbols
+"let g:airline_left_sep = '»'
+"let g:airline_left_sep = '▶'
+"let g:airline_right_sep = '«'
+"let g:airline_right_sep = '◀'
+"let g:airline_symbols.linenr = '␊'
+"let g:airline_symbols.linenr = '␤'
+"let g:airline_symbols.linenr = '¶'
+"let g:airline_symbols.branch = ''
+let g:airline_symbols.paste = 'ρ'
+"let g:airline_symbols.paste = 'Þ'
+"let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
+" airline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+let g:airline_symbols.branch = ''
+
+"
+" TagBar: settings
+"
+"let g:tagbar_iconchars = ['▶', '▼']
+let g:tagbar_iconchars = ['▸', '▾']
+"let g:tagbar_iconchars = ['▷', '◢']
+"let g:tagbar_iconchars = ['+', '-']
+"
+"
+"" NERDTree: Open on empty buffer
+"
+""autocmd vimenter * NERDTree
+let NERDTreeShowBookmarks=1
+" autocmd BufWinEnter * NERDTreeMirror
+
+"
+" Fugitive: Setting
+"
+set statusline=%{fugitive#statusline()}%airline
+
+"
+" UtilSnip: Trigger
+"
+" let g:UltiSnipsSnippetDirectories="~/.vim/UltiSnips"
+"let g:UltiSnipsListSnippets="<C-Tab>"
+"let g:UltiSnipsExpandTrigger="<C-n>"
+"let g:UltiSnipsJumpForwardTrigger="<C-j>"
+"let g:UltiSnipsJumpBackwardTrigger="<C-k>"
+"let g:UltiSnipsEditSplit='vertical'
+"let g:UltiSnipsUsePythonVersion = 2
+
+"
+" Bufferline: Settings
+"
+let g:bufferline_echo=0
+
+"
+" VDebug: Settings
+"
+let g:vdebug_options={}
+let g:vdebug_options['break_on_open']=0
+"let g:vdebug_options['watch_window_style']='compact'
+"let g:vdebug_options['path_maps'] = {'/srv/tom/web' : '/srv/tom/web-cp1'}
+
+"
+" PhpFmt: PSR2 AutoFormat
+"
+" A standard type: PEAR, PHPCS, PSR1, PSR2, Squiz and Zend
+let g:phpfmt_standard = 'PSR2 --no-patch'
+"let g:phpfmt_opotions = '--standard=PSR2 --encoding=utf-8 --no-patch'
+" Or your own defined source of standard (absolute or relative path):
+"let g:phpfmt_standard = '/path/to/custom/standard.xml'
+let g:phpfmt_autosave = 0
+"let g:phpfmt_command = '/path/to/phpcbf --no-patch'
+"let g:phpfmt_tmp_dir = '/path/to/tmp/folder'
+
+"
+" PSR2 formatting
+"
+" If php-cs-fixer is in $PATH, you don't need to define line below
+" let g:php_cs_fixer_path = "~/php-cs-fixer.phar" " define the path to the php-cs-fixer.phar
+" If you use php-cs-fixer version 1.x
+"let g:php_cs_fixer_level = "psr2"              " which level ?
+"let g:php_cs_fixer_config = "default"             " configuration
+" If you want to define specific fixers:
+"let g:php_cs_fixer_fixers_list = "linefeed,short_tag,indentation"
+"let g:php_cs_fixer_fixers_list = "-psr0,psr1,psr2,symfony"
+" End of php-cs-fixer version 1 config params
+" If you use php-cs-fixer version 2.x
+let g:php_cs_fixer_rules = "@PSR1,@PSR2,array_syntax"                " wich rules or ruleset ?
+" End of php-cs-fixer version 2 config params
+"let g:php_cs_fixer_config_file = '.php_cs'        " configuration file
+"let g:php_cs_fixer_php_path = "php"               " Path to PHP
+"let g:php_cs_fixer_enable_default_mapping = 1     " Enable the mapping by default (<leader>pcd)
+"let g:php_cs_fixer_dry_run = 0                    " Call command with dry-run option
+"let g:php_cs_fixer_verbose = 0                    " Return the output of command if 1, else an inline information.
+
+"
+" Vim: Options
+"
+" Rendering
+set ttyfast
+set lazyredraw
+set visualbell
+
+" Visual (statusline related)
+"set noshowmode
+"set showcmd
+set ruler
+set laststatus=2
+
+" Encoding
+set encoding=utf-8
+
+"Security
+"set modelines=0
+
+" Show line numbers
+set number
+"set relativenumber
+
+" Show file stats
+
+" Menu
+set wildmenu
+set wildmode=list:longest,full
+
+" Cursor motion
+set scrolloff=5
+set sidescrolloff=5
+
+set shell=bash
+
+set history=700
+
+set backspace=indent,eol,start
+set matchpairs+=<:> " use % to jump between pairs
+set whichwrap+=<,>,h,l
+
+set colorcolumn=80
+set cursorline
+"set cursorcolumn
+set nowrap
+
+" Allow hidden buffers
+set hidden
+
+" Auto reload
+set autoread
+
+" Textmate holdouts
+
+set mouse=a
+set ttymouse=urxvt
+
+" fold
+set nofoldenable
+"set foldmethod=syntax
+"set foldenable
+"set foldlevelstart=20
+"set foldlevel=3 "Was the one
+
+"let javaScript_fold=1         " JavaScript
+"let perl_fold=1               " Perl
+"let php_folding=2             " PHP
+"let r_syntax_folding=1        " R
+"let ruby_fold=1               " Ruby
+"let sh_fold_enabled=1         " sh
+"let vimsyn_folding='af'       " Vim script
+"let xml_syntax_folding=1      " XML
+
+" set noswapfile
+set backupdir=~/.vim/backup//
+set directory=~/.vim/swap//
+set undodir=~/.vim/undo//
+
+" white space
+set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<
+set list
+
+" Searching
+set hlsearch
+set incsearch
+"set ignorecase
+set smartcase
+set showmatch
+set diffopt=filler,iwhite
+
+" Formatting
+set autoindent
+set copyindent
+set tabstop=4
+set shiftround
+set softtabstop=0
+set expandtab
+set shiftwidth=4
+set smarttab
+
+"
+" Colors
+"
+set t_Co=256
+"let base16colorspace=256  " Access colors present in 256 colorspace
+
+"colorscheme sialoquent
+"colorscheme despacio
+"colorscheme jellybeans
+"colorscheme solarized
+"colorscheme distinguished
+"let g:seoul256_light_background = 252
+colorscheme seoul256-light
+"let g:seoul256_srgb = 1
+"colorscheme gruvbox
+"colorscheme Atelier_PlateauLight
+"set background=dark
+set background=light
+"hi Normal ctermbg=NONE
+"hi LineNr ctermbg=NONE
+"hi Folded ctermbg=NONE
+"hi SignColumn ctermbg=NONE
+"hi SignatureMarkText ctermfg=45
+"hi CursorLineNr ctermbg=NONE ctermfg=210
+"hi CursorLine ctermbg=NONE ctermfg=NONE cterm=underline
+"hi phpDocComment term=bold ctermfg=243 ctermbg=NONE cterm=italic
+"hi phpCommentTitle ctermfg=250 ctermbg=NONE cterm=italic
+"hi phpComment ctermfg=243 ctermbg=NONE cterm=italic
+"hi Comment cterm=italic
+"hi VertSplit cterm=NONE ctermbg=NONE
+"hi Pmenu ctermfg=7 ctermbg=250
+"hi Visual ctermbg=251
+"hi DbgBreakptLine ctermbg=254 ctermfg=NONE
+"hi DbgBreakptSign ctermbg=254 ctermfg=NONE
+"hi DbgCurrentLine ctermbg=229 ctermfg=NONE
+"hi DbgCurrentSign ctermbg=229 ctermfg=NONE
+"hi ErrorMsg
+
+set fillchars=fold:-,vert:│
+"hi LineNr ctermbg=none
+"hi ColorColumn ctermbg=black
+" Put at the very end of your .vimrc file.
+
+"function! PhpSyntaxOverride()
+  "hi! def link phpDocTags  phpDefine
+  "hi! def link phpDocParam phpType
+"endfunction
+
+"augroup phpSyntaxOverride
+  "autocmd!
+  "autocmd FileType php call PhpSyntaxOverride()
+"augroup END
+
+" Per-directory .vimrc files
+set exrc
+set secure

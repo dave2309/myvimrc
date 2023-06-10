@@ -1,0 +1,137 @@
+set nocompatible " Don't try to be vi compatible
+
+"
+" Plug: installation
+"
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+call plug#begin('~/.vim/plugged')
+" Project management / Browsing
+Plug 'kien/ctrlp.vim'
+"Plug 'yegappan/mru'
+Plug 'scrooloose/nerdtree'
+"Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+" TagBar
+Plug 'majutsushi/tagbar'
+Plug 'vim-php/tagbar-phpctags.vim'
+" Airline / display
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'bling/vim-bufferline'
+" PHP
+Plug 'joonty/vdebug'
+Plug 'tobyS/pdv'
+Plug 'StanAngeloff/php.vim'
+Plug 'beanworks/vim-phpfmt'
+Plug 'c9s/phpunit.vim'
+" GIT
+Plug 'tpope/vim-fugitive' | Plug 'junegunn/gv.vim' | Plug 'airblade/vim-gitgutter'
+" Code tools
+Plug 'jiangmiao/auto-pairs'
+Plug 'godlygeek/tabular'
+Plug 'w0rp/ale'
+Plug 'scrooloose/nerdcommenter'
+Plug 'sirver/UltiSnips'
+Plug 'honza/vim-snippets'
+Plug 'tpope/vim-surround'
+Plug 'tobyS/vmustache'
+Plug 'kshenoy/vim-signature'
+Plug 'ntpeters/vim-better-whitespace'
+
+" Colors
+Plug 'junegunn/seoul256.vim'
+call plug#end()
+
+"
+" Leaders
+"
+nnoremap <silent> <Leader>l :call ShowLongLine()<CR>
+nnoremap <silent> <leader>b :TagbarToggle<CR>
+"nnoremap <silent> <leader>c :Ccontroller <C-R><C-W><CR>
+nnoremap <silent> <leader>d :call pdv#DocumentWithSnip()<CR>
+nnoremap <silent> <leader>f :PhpFmt<CR>
+nnoremap <silent> <leader>k :Ccore <C-R><C-W><CR>
+nnoremap <silent> <leader>l :set list!<CR> " Toggle tabs and EOL
+"nnoremap <silent> <leader>m :Cmodel <C-R><C-W><CR>
+nnoremap <silent> <leader>n :NERDTreeToggle<CR>
+nnoremap <silent> <leader>p :set invpaste paste?<CR>
+nnoremap <silent> <leader>q gg=G
+nnoremap <silent> <leader>r :so $MYVIMRC<CR>
+"nnoremap <silent> <leader>s :SyntasticToggleMode<CR>
+nnoremap <silent> <leader>s :ALEToggle<CR>
+"nnoremap <silent> <leader>t :call DoCtags()<CR>
+nnoremap <silent> <leader>w :StripWhitespace<CR>
+
+" Call ctags generation
+nnoremap <silent> <leader>1 :!gen_ctags_php<CR>
+nnoremap <silent> <leader>2 :!gen_ctags_js<CR>
+nnoremap <leader><space> :let @/=''<cr> " clear search
+
+" Paste toggle
+set pastetoggle=<leader>p
+" Keys Mapping
+"vnoremap <C-c> "+y
+"inoremap <C-v> <leader>p<C-r>+<leader>p
+" PHP Cs Fixer
+nnoremap <silent><leader>pcd :call PhpCsFixerFixDirectory()<CR>
+nnoremap <silent><leader>pcf :call PhpCsFixerFixFile()<CR>
+
+"
+" Highlight not move
+"
+nnoremap * *``
+nnoremap # #``
+
+"
+"" Mapping
+"
+"" Moving Blocks
+vnoremap > >gv
+vnoremap < <gv
+" Moving around with Arrows
+nmap <silent> <A-Up> :wincmd k<CR>
+nmap <silent> <A-Down> :wincmd j<CR>
+nmap <silent> <A-Left> :wincmd h<CR>
+nmap <silent> <A-Right> :wincmd l<CR>
+nmap <silent> <A-Home> :exe winnr('$') . "wincmd h"<CR>
+nmap <silent> <A-End> :exe winnr('$') . "wincmd l"<CR>
+" Window resizing mappings
+nmap <silent> <S-A-Left> <C-w><
+nmap <silent> <S-A-Down> <C-W>-
+nmap <silent> <S-A-Up> <C-W>+
+nmap <silent> <S-A-Right> <C-w>>
+" Word move
+nmap <silent> <C-Left> b
+nmap <silent> <C-Right> w
+" remap help key.
+"inoremap <F1> <ESC>:set invfullscreen<CR>a
+"nnoremap <F1> :set invfullscreen<CR>
+"vnoremap <F1> :set invfullscreen<CR>
+"xmap ga <Plug>(EasyAlign)
+"nmap ga <Plug>(EasyAlign)
+
+"
+" Functions:
+"
+"
+"" AutoCmd: Utils
+"
+augroup autosourcing
+    autocmd!
+    autocmd BufWritePost ~/.vimrc :so %
+augroup END
+
+"
+" Vim: Options
+"
+filetype plugin indent on
+syntax on
+
+colorscheme seoul256-light
+let g:seoul256_srgb = 1
+set background=dark

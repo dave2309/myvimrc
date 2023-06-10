@@ -1,0 +1,39 @@
+set nocompatible " Don't try to be vi compatible
+
+" Helps force plugins to load correctly when it is turned back on below
+filetype off
+syntax off
+
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+call plug#begin('~/.vim/bundle')
+" PHP
+Plug 'vim-vdebug/vdebug'
+call plug#end()
+
+
+" Enable last things
+filetype plugin indent on
+syntax on
+
+" Keybindings when in Tmux
+"
+" Leaders
+"
+let mapleader = ','
+
+"
+" VDebug: Settings
+"
+if !exists('g:vdebug_options')
+    let g:vdebug_options = {}
+endif
+let g:vdebug_options.break_on_open = 0
+let g:vdebug_options.watch_window_style = 'compact'
+
+" Per-directory .vimrc files
+set exrc
+set secure
